@@ -1,4 +1,4 @@
-﻿![documentparser](https://github.com/jchristn/documentparser/blob/master/assets/logo.ico)
+﻿![documentparser](https://raw.githubusercontent.com/jchristn/DocumentParser/main/assets/logo.ico)
 
 # DocumentParser
 
