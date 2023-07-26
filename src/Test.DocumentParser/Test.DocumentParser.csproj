@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DocumentParser\DocumentParser.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Inputty" Version="1.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Sample\Word\1.docx">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Sample\Word\2.docx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Sample\Word\3.docx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

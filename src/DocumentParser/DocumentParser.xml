@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DocumentParser</name>
+    </assembly>
+    <members>
+        <member name="T:DocumentParser.DocxParser">
+            <summary>
+            Docx parser.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.DocxParser.Serializer">
+            <summary>
+            Serialization helper.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.DocxParser.TempDirectory">
+            <summary>
+            Temporary directory.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.DocxParser.DirInfo">
+            <summary>
+            Directory info.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.DocxParser.Filename">
+            <summary>
+            Filename.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.DocxParser.#ctor(System.String,System.String)">
+            <summary>
+            Instantiate.
+            </summary>
+            <param name="tempDirectory">Base temp directory.</param>
+            <param name="filename">Filename.</param>
+        </member>
+        <member name="M:DocumentParser.DocxParser.Dispose">
+            <summary>
+            Dispose of resources.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.DocxParser.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.DocxParser.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
+        </member>
+        <member name="T:DocumentParser.IDocumentParser">
+            <summary>
+            Document parser abstract class.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.IDocumentParser.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.IDocumentParser.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
+        </member>
+        <member name="T:DocumentParser.SerializationHelper">
+            <summary>
+            Default serialization helper.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.SerializationHelper.#ctor">
+            <summary>
+            Instantiate.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.SerializationHelper.InstantiateConverter">
+            <summary>
+            Instantiation method to support fixups for various environments, e.g. Unity.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.SerializationHelper.DeserializeJson``1(System.String)">
+            <summary>
+            Deserialize JSON to an instance.
+            </summary>
+            <typeparam name="T">Type.</typeparam>
+            <param name="json">JSON string.</param>
+            <returns>Instance.</returns>
+        </member>
+        <member name="M:DocumentParser.SerializationHelper.SerializeJson(System.Object,System.Boolean)">
+            <summary>
+            Serialize object to JSON.
+            </summary>
+            <param name="obj">Object.</param>
+            <param name="pretty">Pretty print.</param>
+            <returns>JSON.</returns>
+        </member>
+        <member name="M:DocumentParser.SerializationHelper.DeserializeXml``1(System.Byte[])">
+            <summary>
+            Deserialize XML.
+            </summary>
+            <typeparam name="T">Type.</typeparam>
+            <param name="bytes">XML data.</param>
+            <returns>Instance.</returns>
+        </member>
+        <member name="M:DocumentParser.SerializationHelper.DeserializeXml``1(System.String)">
+            <summary>
+            Deserialize XML.
+            </summary>
+            <typeparam name="T">Type.</typeparam>
+            <param name="xml">XML string.</param>
+            <returns>Instance.</returns>
+        </member>
+        <member name="M:DocumentParser.SerializationHelper.SerializeXml(System.Object,System.Boolean)">
+            <summary>
+            Serialize XML.
+            </summary>
+            <param name="obj">Object.</param>
+            <param name="pretty">Pretty print.</param>
+            <returns>XML string.</returns>
+        </member>
+    </members>
+</doc>
