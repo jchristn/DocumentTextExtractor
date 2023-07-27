@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using DocumentParser;
 using GetSomeInput;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Test.DocumentParser
 {
@@ -12,6 +13,7 @@ namespace Test.DocumentParser
         private static bool _RunForever = true;
         private static string _TempDirectory = "./temp/";
         private static DocxParser _Word = null;
+        private static PptxParser _PowerPoint = null;
 
         public static void Main(string[] args)
         {
@@ -70,14 +72,35 @@ namespace Test.DocumentParser
 
         private static void ExtractTokensFromFile(string filename)
         {
+            string text = null;
+
             if (File.Exists(filename))
             {
-                using (_Word = new DocxParser(_TempDirectory, filename))
+                if (filename.ToLower().EndsWith(".docx"))
                 {
-                    string text = _Word.ExtractText();
+                    using (_Word = new DocxParser(_TempDirectory, filename))
+                    {
+                        text = _Word.ExtractText();
+                    }
+                }
+                else if (filename.ToLower().EndsWith(".pptx"))
+                {
+                    using (_PowerPoint = new PptxParser(_TempDirectory, filename))
+                    {
+                        text = _PowerPoint.ExtractText();
+                    }
+                }
 
+                if (!String.IsNullOrEmpty(text))
+                {
                     Console.WriteLine("");
                     Console.WriteLine(text);
+                    Console.WriteLine("");
+                }
+                else
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine("No text.");
                     Console.WriteLine("");
                 }
             }
@@ -91,53 +114,24 @@ namespace Test.DocumentParser
 
         private static void ExtractMetadataFromFile(string filename)
         {
+            Dictionary<string, string> metadata = null;
+
             if (File.Exists(filename))
             {
-                using (_Word = new DocxParser(_TempDirectory, filename))
+                if (filename.ToLower().EndsWith(".docx"))
                 {
-                    Dictionary<string, string> metadata = _Word.ExtractMetadata();
-
-                    if (metadata != null)
+                    using (_Word = new DocxParser(_TempDirectory, filename))
                     {
-                        Console.WriteLine("");
-                        Console.WriteLine("Metadata:");
-                        Console.WriteLine("");
-
-                        foreach (KeyValuePair<string, string> kvp in metadata)
-                        {
-                            Console.WriteLine(kvp.Key + ": " + kvp.Value);
-                        }
-
-                        Console.WriteLine("");
-                    }
-                    else
-                    {
-                        Console.WriteLine("");
-                        Console.WriteLine("No metadata.");
-                        Console.WriteLine("");
+                        metadata = _Word.ExtractMetadata();
                     }
                 }
-            }
-            else
-            {
-                Console.WriteLine("");
-                Console.WriteLine("*** File '" + filename + "' does not exist.");
-                Console.WriteLine("");
-            }
-        }
-
-        private static void ExtractBoth(string filename)
-        {
-            using (_Word = new DocxParser(_TempDirectory, filename))
-            {
-                string text = _Word.ExtractText();
-                Dictionary<string, string> metadata = _Word.ExtractMetadata();
-
-                Console.WriteLine("");
-                Console.WriteLine("Contents:");
-                Console.WriteLine("");
-                Console.WriteLine(text);
-                Console.WriteLine("");
+                else if (filename.ToLower().EndsWith(".pptx"))
+                {
+                    using (_PowerPoint = new PptxParser(_TempDirectory, filename))
+                    {
+                        metadata = _PowerPoint.ExtractMetadata();
+                    }
+                }
 
                 if (metadata != null)
                 {
@@ -158,6 +152,73 @@ namespace Test.DocumentParser
                     Console.WriteLine("No metadata.");
                     Console.WriteLine("");
                 }
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.WriteLine("*** File '" + filename + "' does not exist.");
+                Console.WriteLine("");
+            }
+        }
+
+        private static void ExtractBoth(string filename)
+        {
+            string text = null;
+            Dictionary<string, string> metadata = null;
+
+            if (File.Exists(filename))
+            {
+                if (filename.ToLower().EndsWith(".docx"))
+                {
+                    using (_Word = new DocxParser(_TempDirectory, filename))
+                    {
+                        text = _Word.ExtractText();
+                        metadata = _Word.ExtractMetadata();
+                    }
+                }
+                else if (filename.ToLower().EndsWith(".pptx"))
+                {
+                    using (_PowerPoint = new PptxParser(_TempDirectory, filename))
+                    {
+                        text = _PowerPoint.ExtractText();
+                        metadata = _PowerPoint.ExtractMetadata();
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(text))
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Contents:");
+                Console.WriteLine("");
+                Console.WriteLine(text);
+                Console.WriteLine("");
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.WriteLine("No text.");
+                Console.WriteLine("");
+            }
+
+            if (metadata != null)
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Metadata:");
+                Console.WriteLine("");
+
+                foreach (KeyValuePair<string, string> kvp in metadata)
+                {
+                    Console.WriteLine(kvp.Key + ": " + kvp.Value);
+                }
+
+                Console.WriteLine("");
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.WriteLine("No metadata.");
+                Console.WriteLine("");
             }
         }
     }

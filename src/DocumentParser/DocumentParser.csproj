@@ -2,6 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<AssemblyVersion>1.0.1</AssemblyVersion>
+		<Version>1.0.1</Version>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>DocumentParser.xml</DocumentationFile>
@@ -17,7 +19,6 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>docx parser text extraction metadata</PackageTags>
 		<PackageReleaseNotes>Initial release</PackageReleaseNotes>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<IncludeSymbols>False</IncludeSymbols>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>

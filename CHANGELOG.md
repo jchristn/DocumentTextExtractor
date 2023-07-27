@@ -5,6 +5,7 @@
 v1.0.x
 
 - Initial release
+- Support for ```docx``` and ```pptx```
 
 ## Previous Versions
 

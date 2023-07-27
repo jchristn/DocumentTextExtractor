@@ -70,6 +70,55 @@
             </summary>
             <returns>Text contents.</returns>
         </member>
+        <member name="T:DocumentParser.PptxParser">
+            <summary>
+            Pptx parser.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PptxParser.Serializer">
+            <summary>
+            Serialization helper.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PptxParser.TempDirectory">
+            <summary>
+            Temporary directory.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PptxParser.DirInfo">
+            <summary>
+            Directory info.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PptxParser.Filename">
+            <summary>
+            Filename.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PptxParser.#ctor(System.String,System.String)">
+            <summary>
+            Instantiate.
+            </summary>
+            <param name="tempDirectory">Base temp directory.</param>
+            <param name="filename">Filename.</param>
+        </member>
+        <member name="M:DocumentParser.PptxParser.Dispose">
+            <summary>
+            Dispose of resources.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PptxParser.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.PptxParser.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
+        </member>
         <member name="T:DocumentParser.SerializationHelper">
             <summary>
             Default serialization helper.
