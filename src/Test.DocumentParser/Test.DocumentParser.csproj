@@ -37,4 +37,16 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Sample\Xls\1.xlsx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Sample\Xls\2.xlsx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Sample\Xls\3.xlsx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

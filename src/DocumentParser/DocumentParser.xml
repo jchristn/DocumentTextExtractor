@@ -70,6 +70,55 @@
             </summary>
             <returns>Text contents.</returns>
         </member>
+        <member name="T:DocumentParser.PdfParser">
+            <summary>
+            Pdf parser.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PdfParser.Serializer">
+            <summary>
+            Serialization helper.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PdfParser.TempDirectory">
+            <summary>
+            Temporary directory.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PdfParser.DirInfo">
+            <summary>
+            Directory info.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PdfParser.Filename">
+            <summary>
+            Filename.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PdfParser.#ctor(System.String,System.String)">
+            <summary>
+            Instantiate.
+            </summary>
+            <param name="tempDirectory">Base temp directory.</param>
+            <param name="filename">Filename.</param>
+        </member>
+        <member name="M:DocumentParser.PdfParser.Dispose">
+            <summary>
+            Dispose of resources.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PdfParser.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.PdfParser.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
+        </member>
         <member name="T:DocumentParser.PptxParser">
             <summary>
             Pptx parser.
@@ -173,6 +222,55 @@
             <param name="obj">Object.</param>
             <param name="pretty">Pretty print.</param>
             <returns>XML string.</returns>
+        </member>
+        <member name="T:DocumentParser.XlsxParser">
+            <summary>
+            Xlsx parser.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.XlsxParser.Serializer">
+            <summary>
+            Serialization helper.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.XlsxParser.TempDirectory">
+            <summary>
+            Temporary directory.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.XlsxParser.DirInfo">
+            <summary>
+            Directory info.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.XlsxParser.Filename">
+            <summary>
+            Filename.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.XlsxParser.#ctor(System.String,System.String)">
+            <summary>
+            Instantiate.
+            </summary>
+            <param name="tempDirectory">Base temp directory.</param>
+            <param name="filename">Filename.</param>
+        </member>
+        <member name="M:DocumentParser.XlsxParser.Dispose">
+            <summary>
+            Dispose of resources.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.XlsxParser.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.XlsxParser.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
         </member>
     </members>
 </doc>

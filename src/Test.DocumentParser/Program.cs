@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Xml;
 using DocumentParser;
 using GetSomeInput;
 using static System.Net.Mime.MediaTypeNames;
@@ -14,6 +15,7 @@ namespace Test.DocumentParser
         private static string _TempDirectory = "./temp/";
         private static DocxParser _Word = null;
         private static PptxParser _PowerPoint = null;
+        private static XlsxParser _Excel = null;
 
         public static void Main(string[] args)
         {
@@ -90,6 +92,13 @@ namespace Test.DocumentParser
                         text = _PowerPoint.ExtractText();
                     }
                 }
+                else if (filename.ToLower().EndsWith(".xlsx"))
+                {
+                    using (_Excel = new XlsxParser(_TempDirectory, filename))
+                    {
+                        text = _Excel.ExtractText();
+                    }
+                }
 
                 if (!String.IsNullOrEmpty(text))
                 {
@@ -130,6 +139,13 @@ namespace Test.DocumentParser
                     using (_PowerPoint = new PptxParser(_TempDirectory, filename))
                     {
                         metadata = _PowerPoint.ExtractMetadata();
+                    }
+                }
+                else if (filename.ToLower().EndsWith(".xlsx"))
+                {
+                    using (_Excel = new XlsxParser(_TempDirectory, filename))
+                    {
+                        metadata = _Excel.ExtractMetadata();
                     }
                 }
 
@@ -182,6 +198,14 @@ namespace Test.DocumentParser
                     {
                         text = _PowerPoint.ExtractText();
                         metadata = _PowerPoint.ExtractMetadata();
+                    }
+                }
+                else if (filename.ToLower().EndsWith(".xlsx"))
+                {
+                    using (_Excel = new XlsxParser(_TempDirectory, filename))
+                    {
+                        text = _Excel.ExtractText();
+                        metadata = _Excel.ExtractMetadata();
                     }
                 }
             }
