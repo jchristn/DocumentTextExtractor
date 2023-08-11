@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DocumentParser\DocumentParser.csproj" />
+		<ProjectReference Include="..\DocumentTextExtractor\DocumentTextExtractor.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

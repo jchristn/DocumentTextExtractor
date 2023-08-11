@@ -13,9 +13,9 @@ namespace Test.DocumentParser
     {
         private static bool _RunForever = true;
         private static string _TempDirectory = "./temp/";
-        private static DocxParser _Word = null;
-        private static PptxParser _PowerPoint = null;
-        private static XlsxParser _Excel = null;
+        private static DocxTextExtractor _Word = null;
+        private static PptxTextExtractor _PowerPoint = null;
+        private static XlsxTextExtractor _Excel = null;
 
         public static void Main(string[] args)
         {
@@ -80,21 +80,21 @@ namespace Test.DocumentParser
             {
                 if (filename.ToLower().EndsWith(".docx"))
                 {
-                    using (_Word = new DocxParser(_TempDirectory, filename))
+                    using (_Word = new DocxTextExtractor(_TempDirectory, filename))
                     {
                         text = _Word.ExtractText();
                     }
                 }
                 else if (filename.ToLower().EndsWith(".pptx"))
                 {
-                    using (_PowerPoint = new PptxParser(_TempDirectory, filename))
+                    using (_PowerPoint = new PptxTextExtractor(_TempDirectory, filename))
                     {
                         text = _PowerPoint.ExtractText();
                     }
                 }
                 else if (filename.ToLower().EndsWith(".xlsx"))
                 {
-                    using (_Excel = new XlsxParser(_TempDirectory, filename))
+                    using (_Excel = new XlsxTextExtractor(_TempDirectory, filename))
                     {
                         text = _Excel.ExtractText();
                     }
@@ -129,21 +129,21 @@ namespace Test.DocumentParser
             {
                 if (filename.ToLower().EndsWith(".docx"))
                 {
-                    using (_Word = new DocxParser(_TempDirectory, filename))
+                    using (_Word = new DocxTextExtractor(_TempDirectory, filename))
                     {
                         metadata = _Word.ExtractMetadata();
                     }
                 }
                 else if (filename.ToLower().EndsWith(".pptx"))
                 {
-                    using (_PowerPoint = new PptxParser(_TempDirectory, filename))
+                    using (_PowerPoint = new PptxTextExtractor(_TempDirectory, filename))
                     {
                         metadata = _PowerPoint.ExtractMetadata();
                     }
                 }
                 else if (filename.ToLower().EndsWith(".xlsx"))
                 {
-                    using (_Excel = new XlsxParser(_TempDirectory, filename))
+                    using (_Excel = new XlsxTextExtractor(_TempDirectory, filename))
                     {
                         metadata = _Excel.ExtractMetadata();
                     }
@@ -186,7 +186,7 @@ namespace Test.DocumentParser
             {
                 if (filename.ToLower().EndsWith(".docx"))
                 {
-                    using (_Word = new DocxParser(_TempDirectory, filename))
+                    using (_Word = new DocxTextExtractor(_TempDirectory, filename))
                     {
                         text = _Word.ExtractText();
                         metadata = _Word.ExtractMetadata();
@@ -194,7 +194,7 @@ namespace Test.DocumentParser
                 }
                 else if (filename.ToLower().EndsWith(".pptx"))
                 {
-                    using (_PowerPoint = new PptxParser(_TempDirectory, filename))
+                    using (_PowerPoint = new PptxTextExtractor(_TempDirectory, filename))
                     {
                         text = _PowerPoint.ExtractText();
                         metadata = _PowerPoint.ExtractMetadata();
@@ -202,7 +202,7 @@ namespace Test.DocumentParser
                 }
                 else if (filename.ToLower().EndsWith(".xlsx"))
                 {
-                    using (_Excel = new XlsxParser(_TempDirectory, filename))
+                    using (_Excel = new XlsxTextExtractor(_TempDirectory, filename))
                     {
                         text = _Excel.ExtractText();
                         metadata = _Excel.ExtractMetadata();

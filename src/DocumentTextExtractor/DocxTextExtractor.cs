@@ -16,9 +16,9 @@ using XmlToPox;
 namespace DocumentParser
 {
     /// <summary>
-    /// Xlsx parser.
+    /// Docx text extractor.
     /// </summary>
-    public class XlsxParser : IDocumentParser, IDisposable
+    public class DocxTextExtractor : IDocumentTextExtractor, IDisposable
     {
         #region Public-Members
 
@@ -88,16 +88,11 @@ namespace DocumentParser
         private const string _RXmlNamespace = @"http://schemas.openxmlformats.org/officeDocument/2006/relationships";
         private const string _PXmlNamespace = @"http://schemas.openxmlformats.org/presentationml/2006/main";
 
-        private const string _SheetsSubdirectory = "xl/worksheets/";
-        private const string _DocumentBodyXPath = "/worksheet";
+        private const string _DocumentBodyFile = "word/document.xml";
+        private const string _DocumentBodyXPath = "/w:document/w:body";
 
         private const string _MetadataFile = "docProps/core.xml";
         private const string _MetadataXPath = "/cp:coreProperties";
-
-        private const string _SharedStringsFile = "xl/sharedStrings.xml";
-        private const string _SharedStringsXPath = "/sst";
-
-        private string[] _SharedStrings = null;
 
         #endregion
 
@@ -108,7 +103,7 @@ namespace DocumentParser
         /// </summary>
         /// <param name="tempDirectory">Base temp directory.</param>
         /// <param name="filename">Filename.</param>
-        public XlsxParser(string tempDirectory, string filename)
+        public DocxTextExtractor(string tempDirectory, string filename)
         {
             if (String.IsNullOrEmpty(tempDirectory)) throw new ArgumentNullException(nameof(tempDirectory));
             if (String.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename));
@@ -182,48 +177,22 @@ namespace DocumentParser
         /// <returns>Text contents.</returns>
         public override string ExtractText()
         {
-            _SharedStrings = ExtractSharedStrings();
-
             // see https://www.codeproject.com/Articles/20529/Using-DocxToText-to-Extract-Text-from-DOCX-Files
 
-            string root = _TempDirectory + _SheetsSubdirectory;
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.PreserveWhitespace = true;
+            xmlDoc.Load(_TempDirectory + _DocumentBodyFile);
+
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+            nsmgr.AddNamespace("w", _WXmlNamespace);
+
+            XmlNode node = xmlDoc.DocumentElement.SelectSingleNode(_DocumentBodyXPath, nsmgr);
+            if (node == null) return string.Empty;
+
             StringBuilder sb = new StringBuilder();
-
-            FileInfo[] files = new DirectoryInfo(_TempDirectory + _SheetsSubdirectory).GetFiles();
-            SortedDictionary<int, FileInfo> filesOrdered = new SortedDictionary<int, FileInfo>();
-
-            foreach (FileInfo fi in files)
-            {
-                if (fi.Name.StartsWith("sheet") && fi.Name.EndsWith(".xml"))
-                {
-                    string temp = fi.Name.Replace("sheet", "").Replace(".xml", "");
-                    int num = Convert.ToInt32(temp);
-                    filesOrdered.Add(num, fi);
-                }
-            }
-
-            foreach (KeyValuePair<int, FileInfo> kvp in filesOrdered)
-            {
-                FileInfo fi = kvp.Value;
-
-                if (fi.Name.StartsWith("sheet") && fi.Name.EndsWith(".xml"))
-                {
-                    // Console.WriteLine("File " + fi.Name);
-
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.PreserveWhitespace = true;
-                    xmlDoc.Load(fi.FullName);
-
-                    foreach (XmlNode node in xmlDoc.ChildNodes)
-                    {
-                        // Console.WriteLine(node.NodeType.ToString() + " " + node.Name + " " + node.LocalName + " " + node.InnerText);
-                        sb.Append(ReadNode(node));
-                        sb.Append(Environment.NewLine);
-                    }
-                }
-            }
-
+            sb.Append(ReadNode(node));
             string ret = sb.ToString();
+
             while (ret.Contains("  ")) ret = ret.Replace("  ", " ");
             while (ret.Contains(Environment.NewLine + Environment.NewLine + Environment.NewLine)) ret = ret.Replace(Environment.NewLine + Environment.NewLine + Environment.NewLine, Environment.NewLine + Environment.NewLine);
             return ret;
@@ -241,52 +210,41 @@ namespace DocumentParser
             StringBuilder sb = new StringBuilder();
             foreach (XmlNode child in node.ChildNodes)
             {
-                // Console.WriteLine("  " + child.NodeType.ToString() + " " + child.Name + " " + child.LocalName + " " + child.InnerXml);
                 if (child.NodeType != XmlNodeType.Element) continue;
-                if (String.IsNullOrEmpty(child.InnerText)) continue;
 
-                if (child.LocalName == "c") // content
+                switch (child.LocalName)
                 {
-                    bool isFormula = false;
-                    string formula = null;
+                    case "t":                           // Text
+                        sb.Append(child.InnerText.TrimEnd());
 
-                    XmlNodeList contents = child.ChildNodes;
-                    foreach (XmlNode content in contents)
-                    {
-                        if (content.LocalName == "f")
-                        {
-                            isFormula = true;
-                            formula = content.InnerText;
-                        }
-                        else if (content.LocalName == "v")
-                        {
-                            if (isFormula)
-                            {
-                                sb.Append(content.InnerText + " ");
-                            }
-                            else
-                            {
-                                if (_SharedStrings != null)
-                                {
-                                    if (Int32.TryParse(content.InnerText, out int val))
-                                    {
-                                        if (_SharedStrings.Length > val)
-                                        {
-                                            sb.Append(_SharedStrings[val] + " ");
-                                            sb.Append(ReadNode(child));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    sb.Append(ReadNode(child));
+                        string space =
+                            ((XmlElement)child).GetAttribute("xml:space");
+                        if (!string.IsNullOrEmpty(space) &&
+                            space == "preserve")
+                            sb.Append(' ');
+
+                        break;
+
+                    case "cr":                          // Carriage return
+                    case "br":                          // Page break
+                        sb.Append(Environment.NewLine);
+                        break;
+
+                    case "tab":                         // Tab
+                        sb.Append("\t");
+                        break;
+
+                    case "p":                           // Paragraph
+                        sb.Append(ReadNode(child));
+                        sb.Append(Environment.NewLine);
+                        sb.Append(Environment.NewLine);
+                        break;
+
+                    default:
+                        sb.Append(ReadNode(child));
+                        break;
                 }
             }
-
             return sb.ToString();
         }
 
@@ -303,36 +261,6 @@ namespace DocumentParser
             {
                 baseDir.Delete();
             }
-        }
-
-        private string[] ExtractSharedStrings()
-        {
-            List<string> ret = new List<string>();
-
-            if (File.Exists(_TempDirectory + _SharedStringsFile))
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.PreserveWhitespace = true;
-                xmlDoc.Load(_TempDirectory + _SharedStringsFile);
-
-                foreach (XmlNode node in xmlDoc.ChildNodes)
-                {
-                    if (node.NodeType != XmlNodeType.Element) continue;
-
-                    if (node.HasChildNodes)
-                    {
-                        foreach (XmlNode child in node.ChildNodes)
-                        {
-                            ret.Add(child.InnerText);
-                        }
-                    }
-                }
-            }
-
-            string[] retArray = ret.ToArray();
-            // for (int i = 0; i < retArray.Length; i++) Console.WriteLine(i + ": " + retArray[i]);
-
-            return retArray;
         }
 
         #endregion

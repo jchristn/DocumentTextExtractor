@@ -2,20 +2,19 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-		<AssemblyVersion>1.0.2</AssemblyVersion>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>DocumentParser.xml</DocumentationFile>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>C:\Code\Misc\DocumentParser\DocumentParser.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>../../DocumentTextExtractor.snk</AssemblyOriginatorKeyFile>
 		<Authors>Joel Christner</Authors>
 		<Description>Simple C# library for extracting text and metadata from .docx, .pptx, and .xlsx files</Description>
 		<Copyright>(c)2023 Joel Christner</Copyright>
-		<PackageProjectUrl>https://github.com/jchristn/DocumentParser</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/jchristn/DocumentTextExtractor</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<RepositoryUrl>https://github.com/jchristn/DocumentParser</RepositoryUrl>
+		<RepositoryUrl>https://github.com/jchristn/DocumentTextExtractor</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>docx xlsx pptx word excel powerpoint parsing parser text extraction metadata</PackageTags>
 		<PackageReleaseNotes>Initial release</PackageReleaseNotes>

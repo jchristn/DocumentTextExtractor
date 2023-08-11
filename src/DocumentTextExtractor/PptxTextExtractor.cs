@@ -16,9 +16,9 @@ using XmlToPox;
 namespace DocumentParser
 {
     /// <summary>
-    /// Docx parser.
+    /// Pptx text extractor.
     /// </summary>
-    public class DocxParser : IDocumentParser, IDisposable
+    public class PptxTextExtractor : IDocumentTextExtractor, IDisposable
     {
         #region Public-Members
 
@@ -88,8 +88,8 @@ namespace DocumentParser
         private const string _RXmlNamespace = @"http://schemas.openxmlformats.org/officeDocument/2006/relationships";
         private const string _PXmlNamespace = @"http://schemas.openxmlformats.org/presentationml/2006/main";
 
-        private const string _DocumentBodyFile = "word/document.xml";
-        private const string _DocumentBodyXPath = "/w:document/w:body";
+        private const string _SlidesSubdirectory = "ppt/slides/";
+        private const string _DocumentBodyXPath = "/p:sld/p:cSld/p:spTree";
 
         private const string _MetadataFile = "docProps/core.xml";
         private const string _MetadataXPath = "/cp:coreProperties";
@@ -103,7 +103,7 @@ namespace DocumentParser
         /// </summary>
         /// <param name="tempDirectory">Base temp directory.</param>
         /// <param name="filename">Filename.</param>
-        public DocxParser(string tempDirectory, string filename)
+        public PptxTextExtractor(string tempDirectory, string filename)
         {
             if (String.IsNullOrEmpty(tempDirectory)) throw new ArgumentNullException(nameof(tempDirectory));
             if (String.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename));
@@ -179,20 +179,49 @@ namespace DocumentParser
         {
             // see https://www.codeproject.com/Articles/20529/Using-DocxToText-to-Extract-Text-from-DOCX-Files
 
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.PreserveWhitespace = true;
-            xmlDoc.Load(_TempDirectory + _DocumentBodyFile);
-
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
-            nsmgr.AddNamespace("w", _WXmlNamespace);
-
-            XmlNode node = xmlDoc.DocumentElement.SelectSingleNode(_DocumentBodyXPath, nsmgr);
-            if (node == null) return string.Empty;
-
+            string root = _TempDirectory + _SlidesSubdirectory;
             StringBuilder sb = new StringBuilder();
-            sb.Append(ReadNode(node));
-            string ret = sb.ToString();
 
+            FileInfo[] files = new DirectoryInfo(_TempDirectory + _SlidesSubdirectory).GetFiles();
+            SortedDictionary<int, FileInfo> filesOrdered = new SortedDictionary<int, FileInfo>();
+
+            foreach (FileInfo fi in files)
+            {
+                if (fi.Name.StartsWith("slide") && fi.Name.EndsWith(".xml"))
+                {
+                    string temp = fi.Name.Replace("slide", "").Replace(".xml", "");
+                    int num = Convert.ToInt32(temp);
+                    filesOrdered.Add(num, fi);
+                }
+            }
+
+            foreach (KeyValuePair<int, FileInfo> kvp in filesOrdered)
+            {
+                FileInfo fi = kvp.Value;
+
+                if (fi.Name.StartsWith("slide") && fi.Name.EndsWith(".xml"))
+                {
+                    // Console.WriteLine("File " + fi.Name);
+
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.PreserveWhitespace = true;
+                    xmlDoc.Load(fi.FullName);
+
+                    XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+                    nsmgr.AddNamespace("w", _WXmlNamespace);
+                    nsmgr.AddNamespace("cp", _CpXmlNamespace);
+                    nsmgr.AddNamespace("dc", _DcXmlNamespace);
+                    nsmgr.AddNamespace("a", _AXmlNamespace);
+                    nsmgr.AddNamespace("r", _RXmlNamespace);
+                    nsmgr.AddNamespace("p", _PXmlNamespace);
+
+                    XmlNode node = xmlDoc.DocumentElement.SelectSingleNode(_DocumentBodyXPath, nsmgr);
+                    sb.Append(ReadNode(node));
+                    sb.Append(Environment.NewLine);
+                }
+            }
+
+            string ret = sb.ToString();
             while (ret.Contains("  ")) ret = ret.Replace("  ", " ");
             while (ret.Contains(Environment.NewLine + Environment.NewLine + Environment.NewLine)) ret = ret.Replace(Environment.NewLine + Environment.NewLine + Environment.NewLine, Environment.NewLine + Environment.NewLine);
             return ret;
@@ -211,32 +240,22 @@ namespace DocumentParser
             foreach (XmlNode child in node.ChildNodes)
             {
                 if (child.NodeType != XmlNodeType.Element) continue;
+                if (String.IsNullOrEmpty(child.InnerText)) continue;
+
+                // Console.WriteLine(child.NodeType.ToString() + " " + child.Name + " " + child.LocalName + " " + child.InnerText);
 
                 switch (child.LocalName)
-                {
-                    case "t":                           // Text
-                        sb.Append(child.InnerText.TrimEnd());
-
-                        string space =
-                            ((XmlElement)child).GetAttribute("xml:space");
-                        if (!string.IsNullOrEmpty(space) &&
-                            space == "preserve")
-                            sb.Append(' ');
-
+                {   
+                    // case "p":   // Paragraph
+                    // case "r":   // Run
+                    case "t":   // Text
+                        sb.Append(child.InnerText + " ");
+                        sb.Append(ReadNode(child));
+                        // sb.Append(Environment.NewLine);
                         break;
 
                     case "cr":                          // Carriage return
                     case "br":                          // Page break
-                        sb.Append(Environment.NewLine);
-                        break;
-
-                    case "tab":                         // Tab
-                        sb.Append("\t");
-                        break;
-
-                    case "p":                           // Paragraph
-                        sb.Append(ReadNode(child));
-                        sb.Append(Environment.NewLine);
                         sb.Append(Environment.NewLine);
                         break;
 
@@ -245,6 +264,7 @@ namespace DocumentParser
                         break;
                 }
             }
+
             return sb.ToString();
         }
 

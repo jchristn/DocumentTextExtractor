@@ -1,12 +1,12 @@
-﻿![documentparser](https://raw.githubusercontent.com/jchristn/DocumentParser/main/assets/logo.ico)
+﻿![documenttextextractor](https://raw.githubusercontent.com/jchristn/DocumentTextExtractor/main/assets/logo.ico)
 
-# DocumentParser
+# DocumentTextExtractor
 
 ## Simple C# library for extracting text and metadata from .docx, .pptx, and .xlsx files
 
-[![NuGet Version](https://img.shields.io/nuget/v/DocumentParser.svg?style=flat)](https://www.nuget.org/packages/DocumentParser/) [![NuGet](https://img.shields.io/nuget/dt/DocumentParser.svg)](https://www.nuget.org/packages/DocumentParser)    
+[![NuGet Version](https://img.shields.io/nuget/v/DocumentTextExtractor.svg?style=flat)](https://www.nuget.org/packages/DocumentTextExtractor/) [![NuGet](https://img.shields.io/nuget/dt/DocumentTextExtractor.svg)](https://www.nuget.org/packages/DocumentTextExtractor)    
 
-DocumentParser provides simple methods for extracting text and metadata from .docx, .pptx, and .xlsx files.
+DocumentTextExtractor provides simple methods for extracting text and metadata from .docx, .pptx, and .xlsx files.
 
 ## New in v1.0.x
 
@@ -19,26 +19,26 @@ This library has been tested on a limited set of documents.  It is highly likely
 
 ## Simple Examples
 
-Refer to the ```Test.DocumentParser``` project for a full example.
+Refer to the ```Test``` project for a full example.
 
 ```csharp
-using DocumentParser;
+using DocumentTextExtractor;
 
 void Main(string[] args)
 {
-  using (DocxParser docx = new DocxParser("./temp/", "mydocument.docx"))
+  using (DocxTextExtractor docx = new DocxTextExtractor("./temp/", "mydocument.docx"))
   {
     string docxText = docx.ExtractText();
     Dictionary<string, string> docxMetadata = docx.ExtractMetadata();
   }
 
-  using (PptxParser pptx = new DocxParser("./temp/", "mypresentation.pptx"))
+  using (PptxTextExtractor pptx = new DocxTextExtractor("./temp/", "mypresentation.pptx"))
   {
     string pptxText = pptx.ExtractText();
     Dictionary<string, string> pptxMetadata = pptx.ExtractMetadata();
   }
 
-  using (XlsxParser xlsx = new XlsxParser("./temp/", "mypresentation.pptx"))
+  using (XlsxTextExtractor xlsx = new XlsxTextExtractor("./temp/", "mypresentation.pptx"))
   {
     string xlsxText = xlsx.ExtractText();
     Dictionary<string, string> xlsxMetadata = xlsx.ExtractMetadata();

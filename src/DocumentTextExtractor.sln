@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentParser", "DocumentParser\DocumentParser.csproj", "{30288F78-673C-43EC-9EF7-023F39E0BD12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentTextExtractor", "DocumentTextExtractor\DocumentTextExtractor.csproj", "{30288F78-673C-43EC-9EF7-023F39E0BD12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.DocumentParser", "Test.DocumentParser\Test.DocumentParser.csproj", "{9BFC29AE-D6FB-4162-9F6D-370785E295C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{9BFC29AE-D6FB-4162-9F6D-370785E295C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace DocumentParser
 {
     /// <summary>
-    /// Document parser abstract class.
+    /// Document text extractor abstract class.
     /// </summary>
-    public abstract class IDocumentParser
+    public abstract class IDocumentTextExtractor
     {
         /// <summary>
         /// Extract metadata from document.
