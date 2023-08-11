@@ -1,4 +1,4 @@
-﻿![documenttextextractor](https://raw.githubusercontent.com/jchristn/DocumentTextExtractor/main/assets/logo.ico)
+﻿![documenttextextractor](https://raw.githubusercontent.com/jchristn/DocumentTextExtractor/main/assets/logo.ico) 
 
 # DocumentTextExtractor
 
