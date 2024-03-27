@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>1.0.4</Version>
+		<Version>1.0.7</Version>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>DocumentParser.xml</DocumentationFile>
@@ -22,27 +22,39 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="logo.ico" />
+		<Content Include="logo.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\..\assets\logo.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	  <None Include="..\..\LICENSE.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	  <None Include="..\..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+		<None Include="..\..\assets\logo.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\LICENSE.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="pdf.py">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Text.Json" Version="7.0.3" />
+		<PackageReference Include="PDFsharp" Version="6.0.0" />
+		<PackageReference Include="Shelli" Version="1.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 		<PackageReference Include="XmlToPox" Version="1.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="pdf.py">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

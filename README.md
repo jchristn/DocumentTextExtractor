@@ -11,15 +11,17 @@ DocumentTextExtractor provides simple methods for extracting text and metadata f
 ## New in v1.0.x
 
 - Initial release
-- Support for ```docx```, ```pptx```, and ```xlsx```
+- Support for `docx`, `pptx`, `xlsx`, and `pdf`
 
 ## Disclaimer
 
 This library has been tested on a limited set of documents.  It is highly likely that documents exist this from which the library, in its current state, cannot extract text.
 
+The PDF implementation relies upon [PDFSharp](https://github.com/empira/PDFsharp) and [PDFPlumber](https://github.com/jsvine/pdfplumber).  The latter is written in Python and requires that you have installed Python and used `pip` to install the `pdfplumber` package.
+
 ## Simple Examples
 
-Refer to the ```Test``` project for a full example.
+Refer to the `Test` project for a full example.
 
 ```csharp
 using DocumentTextExtractor;
@@ -42,6 +44,12 @@ void Main(string[] args)
   {
     string xlsxText = xlsx.ExtractText();
     Dictionary<string, string> xlsxMetadata = xlsx.ExtractMetadata();
+  }
+
+  using (PdfTextExtractor pdf = new PdfTextExtractor("myfile.pdf"))
+  {
+    string pdfText = pdf.ExtractText();
+    Dictionary<string, string> pdfMetadata = pdf.ExtractMetadata();
   }
 }
 ```

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Xml;
 using DocumentParser;
+using DocumentTextExtractor;
 using GetSomeInput;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -14,6 +15,7 @@ namespace Test.DocumentParser
         private static bool _RunForever = true;
         private static string _TempDirectory = "./temp/";
         private static DocxTextExtractor _Word = null;
+        private static PdfTextExtractor _Pdf = null;
         private static PptxTextExtractor _PowerPoint = null;
         private static XlsxTextExtractor _Excel = null;
 
@@ -99,6 +101,13 @@ namespace Test.DocumentParser
                         text = _Excel.ExtractText();
                     }
                 }
+                else if (filename.ToLower().EndsWith(".pdf"))
+                {
+                    using (_Pdf = new PdfTextExtractor(filename))
+                    {
+                        text = _Pdf.ExtractText();
+                    }
+                }
 
                 if (!String.IsNullOrEmpty(text))
                 {
@@ -146,6 +155,13 @@ namespace Test.DocumentParser
                     using (_Excel = new XlsxTextExtractor(_TempDirectory, filename))
                     {
                         metadata = _Excel.ExtractMetadata();
+                    }
+                }
+                else if (filename.ToLower().EndsWith(".pdf"))
+                {
+                    using (_Pdf = new PdfTextExtractor(filename))
+                    {
+                        metadata = _Pdf.ExtractMetadata();
                     }
                 }
 
