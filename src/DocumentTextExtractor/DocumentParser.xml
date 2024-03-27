@@ -70,6 +70,49 @@
             </summary>
             <returns>Text contents.</returns>
         </member>
+        <member name="T:DocumentParser.PdfTextExtractor">
+            <summary>
+            PDF text extractor.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PdfTextExtractor.Serializer">
+            <summary>
+            Serialization helper.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PdfTextExtractor.Filename">
+            <summary>
+            Filename.
+            </summary>
+        </member>
+        <member name="P:DocumentParser.PdfTextExtractor.Logger">
+            <summary>
+            Method to invoke to send log messages.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.#ctor(System.String)">
+            <summary>
+            Instantiate.
+            </summary>
+            <param name="filename">Filename.</param>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.Dispose">
+            <summary>
+            Dispose of resources.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
+        </member>
         <member name="T:DocumentParser.PptxTextExtractor">
             <summary>
             Pptx text extractor.
@@ -218,49 +261,6 @@
             <returns>Dictionary containing metadata.</returns>
         </member>
         <member name="M:DocumentParser.XlsxTextExtractor.ExtractText">
-            <summary>
-            Extract text from document.
-            </summary>
-            <returns>Text contents.</returns>
-        </member>
-        <member name="T:DocumentTextExtractor.PdfTextExtractor">
-            <summary>
-            PDF text extractor.
-            </summary>
-        </member>
-        <member name="P:DocumentTextExtractor.PdfTextExtractor.Serializer">
-            <summary>
-            Serialization helper.
-            </summary>
-        </member>
-        <member name="P:DocumentTextExtractor.PdfTextExtractor.Filename">
-            <summary>
-            Filename.
-            </summary>
-        </member>
-        <member name="P:DocumentTextExtractor.PdfTextExtractor.Logger">
-            <summary>
-            Method to invoke to send log messages.
-            </summary>
-        </member>
-        <member name="M:DocumentTextExtractor.PdfTextExtractor.#ctor(System.String)">
-            <summary>
-            Instantiate.
-            </summary>
-            <param name="filename">Filename.</param>
-        </member>
-        <member name="M:DocumentTextExtractor.PdfTextExtractor.Dispose">
-            <summary>
-            Dispose of resources.
-            </summary>
-        </member>
-        <member name="M:DocumentTextExtractor.PdfTextExtractor.ExtractMetadata">
-            <summary>
-            Extract metadata from document.
-            </summary>
-            <returns>Dictionary containing metadata.</returns>
-        </member>
-        <member name="M:DocumentTextExtractor.PdfTextExtractor.ExtractText">
             <summary>
             Extract text from document.
             </summary>

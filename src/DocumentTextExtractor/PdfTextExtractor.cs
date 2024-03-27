@@ -4,11 +4,8 @@ using System.Text;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using HeyShelli;
-using System.Threading.Tasks;
-using DocumentParser;
-using System.Reflection.PortableExecutable;
 
-namespace DocumentTextExtractor
+namespace DocumentParser
 {
     /// <summary>
     /// PDF text extractor.

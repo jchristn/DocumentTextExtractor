@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Xml;
 using DocumentParser;
-using DocumentTextExtractor;
 using GetSomeInput;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Test.DocumentParser
 {
