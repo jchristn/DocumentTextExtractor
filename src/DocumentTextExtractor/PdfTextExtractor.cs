@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
-using HeyShelli;
-
-namespace DocumentParser
+﻿namespace DocumentParser
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using PdfSharp.Pdf;
+    using PdfSharp.Pdf.IO;
+    using HeyShelli;
+
     /// <summary>
     /// PDF text extractor.
     /// </summary>
@@ -14,44 +14,11 @@ namespace DocumentParser
     {
         #region Public-Members
 
-        /// <summary>
-        /// Serialization helper.
-        /// </summary>
-        public SerializationHelper Serializer
-        {
-            get
-            {
-                return _Serializer;
-            }
-            set
-            {
-                _Serializer = value ?? throw new ArgumentNullException(nameof(Serializer));
-            }
-        }
-
-        /// <summary>
-        /// Filename.
-        /// </summary>
-        public string Filename
-        {
-            get
-            {
-                return _Filename;
-            }
-        }
-
-        /// <summary>
-        /// Method to invoke to send log messages.
-        /// </summary>
-        public Action<string> Logger { get; set; } = null;
-
         #endregion
 
         #region Private-Members
 
-        private string _Header = "[PdfParser] ";
-        private SerializationHelper _Serializer = new();
-        private readonly string _Filename = null;
+        private Shelli _Shelli = new Shelli();
 
         #endregion
 
@@ -65,7 +32,7 @@ namespace DocumentParser
         {
             if (String.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename));
 
-            _Filename = filename;
+            Filename = filename;
         }
 
         #endregion
@@ -87,7 +54,7 @@ namespace DocumentParser
         {
             Dictionary<string, string> ret = new();
 
-            PdfDocument doc = PdfReader.Open(_Filename);
+            PdfDocument doc = PdfReader.Open(Filename);
             var metadata = doc.Info.Elements;
             foreach (var element in metadata)
             {
@@ -117,21 +84,29 @@ namespace DocumentParser
                 command += "chcp 65001 && SET PYTHONIOENCODING=utf-8 && ";
             }
 
-            Shelli.OutputDataReceived = (s) =>
+            if (OperatingSystem.IsWindows())
+                command += "pip install -q pdfplumber && ";
+            else
+                command += "pip install -q pdfplumber ; ";
+
+            _Shelli.OutputDataReceived = (s) =>
             {
                 lastDataReceived = DateTime.UtcNow;
                 dataSb.Append(s + Environment.NewLine);
             };
 
-            Shelli.ErrorDataReceived = (s) =>
+            _Shelli.ErrorDataReceived = (s) =>
             {
                 lastErrorReceived = DateTime.UtcNow;
                 errorSb.Append(s + Environment.NewLine);
             };
 
-            command += "py pdf.py " + _Filename;
+            if (OperatingSystem.IsWindows())
+                command += "py pdf.py " + Filename;
+            else
+                command += "python3 pdf.py " + Filename;
 
-            int returnCode = Shelli.Go(command);
+            int returnCode = _Shelli.Go(command);
 
             while
                 (
@@ -148,7 +123,6 @@ namespace DocumentParser
             }
             else
             {
-                Logger?.Invoke(_Header + "non-zero return code received from pdf.py: " + returnCode);
                 return "Error: " + errorSb.ToString();
             }
         }

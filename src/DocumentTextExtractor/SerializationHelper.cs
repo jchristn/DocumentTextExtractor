@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Xml;
-using System.Xml.Serialization;
-
-namespace DocumentParser
+﻿namespace DocumentParser
 {
+    using System;
+    using System.Collections.Specialized;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+    using System.Xml;
+    using System.Xml.Serialization;
+
     /// <summary>
     /// Default serialization helper.
     /// </summary>

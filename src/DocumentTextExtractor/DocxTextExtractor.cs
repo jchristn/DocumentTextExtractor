@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.IO.Compression;
-using System.IO.Packaging;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Xml;
-using System.Xml.Linq;
-using DocumentParser;
-using XmlToPox;
-
-namespace DocumentParser
+﻿namespace DocumentParser
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Text;
+    using System.Xml;
+
     /// <summary>
     /// Docx text extractor.
     /// </summary>
@@ -22,64 +14,9 @@ namespace DocumentParser
     {
         #region Public-Members
 
-        /// <summary>
-        /// Serialization helper.
-        /// </summary>
-        public SerializationHelper Serializer
-        {
-            get
-            {
-                return _Serializer;
-            }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(Serializer));
-                _Serializer = value;
-            }
-        }
-
-        /// <summary>
-        /// Temporary directory.
-        /// </summary>
-        public string TempDirectory
-        {
-            get
-            {
-                return _TempDirectory;
-            }
-        }
-
-        /// <summary>
-        /// Directory info.
-        /// </summary>
-        public DirectoryInfo DirInfo
-        {
-            get
-            {
-                return _DirInfo;
-            }
-        }
-
-        /// <summary>
-        /// Filename.
-        /// </summary>
-        public string Filename
-        {
-            get
-            {
-                return _Filename;
-            }
-        }
-
         #endregion
 
         #region Private-Members
-
-        private Guid _Guid = Guid.NewGuid();
-        private SerializationHelper _Serializer = new SerializationHelper();
-        private string _TempDirectory = null;
-        private DirectoryInfo _DirInfo = null;
-        private string _Filename = null;
 
         private const string _WXmlNamespace = @"http://schemas.openxmlformats.org/wordprocessingml/2006/main";
         private const string _CpXmlNamespace = @"http://schemas.openxmlformats.org/wordprocessingml/2006/main";
@@ -108,17 +45,12 @@ namespace DocumentParser
             if (String.IsNullOrEmpty(tempDirectory)) throw new ArgumentNullException(nameof(tempDirectory));
             if (String.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename));
 
-            tempDirectory = tempDirectory.Replace("\\", "/");
-            if (!tempDirectory.EndsWith("/")) tempDirectory += "/";
-            _TempDirectory = tempDirectory + _Guid.ToString() + "/";
-            if (!Directory.Exists(_TempDirectory)) Directory.CreateDirectory(_TempDirectory);
-            _DirInfo = new DirectoryInfo(_TempDirectory);
+            TempDirectory = tempDirectory;
+            Filename = filename;
 
-            _Filename = filename;
-
-            using (ZipArchive archive = ZipFile.OpenRead(_Filename))
+            using (ZipArchive archive = ZipFile.OpenRead(Filename))
             {
-                archive.ExtractToDirectory(_TempDirectory);
+                archive.ExtractToDirectory(TempDirectory);
             }
         }
 
@@ -131,8 +63,8 @@ namespace DocumentParser
         /// </summary>
         public void Dispose()
         {
-            RecursiveDelete(_DirInfo, true);
-            Directory.Delete(_TempDirectory, true);
+            RecursiveDelete(DirInfo, true);
+            Directory.Delete(TempDirectory, true);
         }
 
         /// <summary>
@@ -145,7 +77,7 @@ namespace DocumentParser
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.PreserveWhitespace = true;
-            xmlDoc.Load(_TempDirectory + _MetadataFile);
+            xmlDoc.Load(TempDirectory + _MetadataFile);
 
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
             nsmgr.AddNamespace("w", _WXmlNamespace);
@@ -181,7 +113,7 @@ namespace DocumentParser
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.PreserveWhitespace = true;
-            xmlDoc.Load(_TempDirectory + _DocumentBodyFile);
+            xmlDoc.Load(TempDirectory + _DocumentBodyFile);
 
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
             nsmgr.AddNamespace("w", _WXmlNamespace);
@@ -194,7 +126,11 @@ namespace DocumentParser
             string ret = sb.ToString();
 
             while (ret.Contains("  ")) ret = ret.Replace("  ", " ");
-            while (ret.Contains(Environment.NewLine + Environment.NewLine + Environment.NewLine)) ret = ret.Replace(Environment.NewLine + Environment.NewLine + Environment.NewLine, Environment.NewLine + Environment.NewLine);
+            while (ret.Contains(Environment.NewLine + Environment.NewLine)) 
+                ret = ret.Replace(
+                    Environment.NewLine + Environment.NewLine, 
+                    Environment.NewLine);
+
             return ret;
         }
 
@@ -246,21 +182,6 @@ namespace DocumentParser
                 }
             }
             return sb.ToString();
-        }
-
-        private void RecursiveDelete(DirectoryInfo baseDir, bool isRootDir)
-        {
-            if (!baseDir.Exists) return;
-            foreach (DirectoryInfo dir in baseDir.EnumerateDirectories()) RecursiveDelete(dir, false);
-            foreach (FileInfo file in baseDir.GetFiles())
-            {
-                file.IsReadOnly = false;
-                file.Delete();
-            }
-            if (!isRootDir)
-            {
-                baseDir.Delete();
-            }
         }
 
         #endregion

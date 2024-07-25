@@ -5,7 +5,8 @@
 v1.0.x
 
 - Initial release
-- Support for ```docx``` and ```pptx```
+- Support for `docx`, `pptx`, `xlsx`, and `pdf`
+- Contextual extraction for `pptx`, `xlsx`
 
 ## Previous Versions
 

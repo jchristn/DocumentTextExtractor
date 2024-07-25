@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using DocumentParser;
 using GetSomeInput;
 
@@ -38,6 +39,16 @@ namespace Test.DocumentParser
                     parts = userInput.Split(" ", 2);
                     ExtractBoth(parts[1]);
                 }
+                else if (userInput.StartsWith("ppt ") && userInput.Length > "ppt ".Length)
+                {
+                    parts = userInput.Split(" ", 2);
+                    ProcessPptx(parts[1]);
+                }
+                else if (userInput.StartsWith("xls ") && userInput.Length > "xls ".Length)
+                {
+                    parts = userInput.Split(" ", 2);
+                    ProcessXlsx(parts[1]);
+                }
                 else
                 {
                     switch (userInput)
@@ -67,6 +78,8 @@ namespace Test.DocumentParser
             Console.WriteLine("  tokenize [file]   tokenize file [filename]");
             Console.WriteLine("  metadata [file]   extract metadata from file [filename]");
             Console.WriteLine("  both [file]       tokenize and extract metadata from file [filename]");
+            Console.WriteLine("  ppt [file]        fully process a pptx file, retrieve results by slide");
+            Console.WriteLine("  xls [file]        fully process an xlsx file, retrieve results by sheet");
             Console.WriteLine("");
         }
 
@@ -220,6 +233,14 @@ namespace Test.DocumentParser
                         metadata = _Excel.ExtractMetadata();
                     }
                 }
+                else if (filename.ToLower().EndsWith(".pdf"))
+                {
+                    using (_Pdf = new PdfTextExtractor(filename))
+                    {
+                        text = _Pdf.ExtractText();
+                        metadata = _Pdf.ExtractMetadata();
+                    }
+                }
             }
 
             if (!String.IsNullOrEmpty(text))
@@ -255,6 +276,110 @@ namespace Test.DocumentParser
                 Console.WriteLine("");
                 Console.WriteLine("No metadata.");
                 Console.WriteLine("");
+            }
+        }
+
+        private static void ProcessPptx(string filename)
+        {
+            if (File.Exists(filename))
+            {
+                if (filename.ToLower().EndsWith(".pptx"))
+                {
+                    using (_PowerPoint = new PptxTextExtractor(_TempDirectory, filename))
+                    {
+                        IEnumerable<KeyValuePair<int, string>> text = _PowerPoint.ExtractTextBySlide();
+
+                        Console.WriteLine("");
+                        Console.WriteLine("Contents:");
+                        Console.WriteLine("");
+
+                        if (text != null && text.Count() > 0)
+                        {
+                            foreach (KeyValuePair<int, string> kvp in text)
+                            {
+                                Console.WriteLine("Slide " + kvp.Key + ": " + Environment.NewLine + kvp.Value);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("(null)" + Environment.NewLine);
+                        }
+
+                        Dictionary<string, string> metadata = _PowerPoint.ExtractMetadata();
+
+                        if (metadata != null)
+                        {
+                            Console.WriteLine("");
+                            Console.WriteLine("Metadata:");
+                            Console.WriteLine("");
+
+                            foreach (KeyValuePair<string, string> kvp in metadata)
+                            {
+                                Console.WriteLine(kvp.Key + ": " + kvp.Value);
+                            }
+
+                            Console.WriteLine("");
+                        }
+                        else
+                        {
+                            Console.WriteLine("");
+                            Console.WriteLine("(null).");
+                            Console.WriteLine("");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ProcessXlsx(string filename)
+        {
+            if (File.Exists(filename))
+            {
+                if (filename.ToLower().EndsWith(".xlsx"))
+                {
+                    using (_Excel = new XlsxTextExtractor(_TempDirectory, filename))
+                    {
+                        IEnumerable<KeyValuePair<int, string>> text = _Excel.ExtractTextBySheet();
+
+                        Console.WriteLine("");
+                        Console.WriteLine("Contents:");
+                        Console.WriteLine("");
+
+                        if (text != null && text.Count() > 0)
+                        {
+                            foreach (KeyValuePair<int, string> kvp in text)
+                            {
+                                Console.WriteLine("Sheet " + kvp.Key + ": " + Environment.NewLine + kvp.Value);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("(null)" + Environment.NewLine);
+                        }
+
+                        Dictionary<string, string> metadata = _Excel.ExtractMetadata();
+
+                        if (metadata != null)
+                        {
+                            Console.WriteLine("");
+                            Console.WriteLine("Metadata:");
+                            Console.WriteLine("");
+
+                            foreach (KeyValuePair<string, string> kvp in metadata)
+                            {
+                                Console.WriteLine(kvp.Key + ": " + kvp.Value);
+                            }
+
+                            Console.WriteLine("");
+                        }
+                        else
+                        {
+                            Console.WriteLine("");
+                            Console.WriteLine("(null).");
+                            Console.WriteLine("");
+                        }
+                    }
+                }
             }
         }
     }

@@ -2,10 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-		<Version>1.0.8</Version>
+		<Version>1.0.9</Version>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<DocumentationFile>DocumentParser.xml</DocumentationFile>
+		<DocumentationFile>DocumentTextExtractor.xml</DocumentationFile>
 		<Authors>Joel Christner</Authors>
 		<Description>Simple C# library for extracting text and metadata from .docx, .pptx, and .xlsx files</Description>
 		<Copyright>(c)2024 Joel Christner</Copyright>
@@ -41,20 +41,18 @@
 		<None Include="pdf.py">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="PDFsharp" Version="6.0.0" />
-		<PackageReference Include="Shelli" Version="1.0.1" />
-		<PackageReference Include="System.Text.Json" Version="8.0.3" />
-		<PackageReference Include="XmlToPox" Version="1.0.3" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="pdf.py">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<None Include="DocumentTextExtractor.xml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="PDFsharp" Version="6.1.1" />
+		<PackageReference Include="Shelli" Version="2.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="XmlToPox" Version="1.0.3" />
 	</ItemGroup>
 
 </Project>

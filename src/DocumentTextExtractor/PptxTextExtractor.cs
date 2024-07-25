@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.IO.Compression;
-using System.IO.Packaging;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Xml;
-using System.Xml.Linq;
-using DocumentParser;
-using XmlToPox;
-
-namespace DocumentParser
+﻿namespace DocumentParser
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Text;
+    using System.Xml;
+
     /// <summary>
     /// Pptx text extractor.
     /// </summary>
@@ -22,64 +14,9 @@ namespace DocumentParser
     {
         #region Public-Members
 
-        /// <summary>
-        /// Serialization helper.
-        /// </summary>
-        public SerializationHelper Serializer
-        {
-            get
-            {
-                return _Serializer;
-            }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(Serializer));
-                _Serializer = value;
-            }
-        }
-
-        /// <summary>
-        /// Temporary directory.
-        /// </summary>
-        public string TempDirectory
-        {
-            get
-            {
-                return _TempDirectory;
-            }
-        }
-
-        /// <summary>
-        /// Directory info.
-        /// </summary>
-        public DirectoryInfo DirInfo
-        {
-            get
-            {
-                return _DirInfo;
-            }
-        }
-
-        /// <summary>
-        /// Filename.
-        /// </summary>
-        public string Filename
-        {
-            get
-            {
-                return _Filename;
-            }
-        }
-
         #endregion
 
         #region Private-Members
-
-        private Guid _Guid = Guid.NewGuid();
-        private SerializationHelper _Serializer = new SerializationHelper();
-        private string _TempDirectory = null;
-        private DirectoryInfo _DirInfo = null;
-        private string _Filename = null;
 
         private const string _WXmlNamespace = @"http://schemas.openxmlformats.org/wordprocessingml/2006/main";
         private const string _CpXmlNamespace = @"http://schemas.openxmlformats.org/wordprocessingml/2006/main";
@@ -108,17 +45,12 @@ namespace DocumentParser
             if (String.IsNullOrEmpty(tempDirectory)) throw new ArgumentNullException(nameof(tempDirectory));
             if (String.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename));
 
-            tempDirectory = tempDirectory.Replace("\\", "/");
-            if (!tempDirectory.EndsWith("/")) tempDirectory += "/";
-            _TempDirectory = tempDirectory + _Guid.ToString() + "/";
-            if (!Directory.Exists(_TempDirectory)) Directory.CreateDirectory(_TempDirectory);
-            _DirInfo = new DirectoryInfo(_TempDirectory);
+            TempDirectory = tempDirectory;
+            Filename = filename;
 
-            _Filename = filename;
-
-            using (ZipArchive archive = ZipFile.OpenRead(_Filename))
+            using (ZipArchive archive = ZipFile.OpenRead(Filename))
             {
-                archive.ExtractToDirectory(_TempDirectory);
+                archive.ExtractToDirectory(TempDirectory);
             }
         }
 
@@ -131,8 +63,8 @@ namespace DocumentParser
         /// </summary>
         public void Dispose()
         {
-            RecursiveDelete(_DirInfo, true);
-            Directory.Delete(_TempDirectory, true);
+            RecursiveDelete(DirInfo, true);
+            Directory.Delete(TempDirectory, true);
         }
 
         /// <summary>
@@ -145,7 +77,7 @@ namespace DocumentParser
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.PreserveWhitespace = true;
-            xmlDoc.Load(_TempDirectory + _MetadataFile);
+            xmlDoc.Load(TempDirectory + _MetadataFile);
 
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
             nsmgr.AddNamespace("w", _WXmlNamespace);
@@ -179,10 +111,10 @@ namespace DocumentParser
         {
             // see https://www.codeproject.com/Articles/20529/Using-DocxToText-to-Extract-Text-from-DOCX-Files
 
-            string root = _TempDirectory + _SlidesSubdirectory;
+            string root = TempDirectory + _SlidesSubdirectory;
             StringBuilder sb = new StringBuilder();
 
-            FileInfo[] files = new DirectoryInfo(_TempDirectory + _SlidesSubdirectory).GetFiles();
+            FileInfo[] files = new DirectoryInfo(TempDirectory + _SlidesSubdirectory).GetFiles();
             SortedDictionary<int, FileInfo> filesOrdered = new SortedDictionary<int, FileInfo>();
 
             foreach (FileInfo fi in files)
@@ -217,14 +149,78 @@ namespace DocumentParser
 
                     XmlNode node = xmlDoc.DocumentElement.SelectSingleNode(_DocumentBodyXPath, nsmgr);
                     sb.Append(ReadNode(node));
-                    sb.Append(Environment.NewLine);
+                    // sb.Append(Environment.NewLine);
                 }
             }
 
             string ret = sb.ToString();
+
             while (ret.Contains("  ")) ret = ret.Replace("  ", " ");
-            while (ret.Contains(Environment.NewLine + Environment.NewLine + Environment.NewLine)) ret = ret.Replace(Environment.NewLine + Environment.NewLine + Environment.NewLine, Environment.NewLine + Environment.NewLine);
+            while (ret.Contains(Environment.NewLine + Environment.NewLine)) 
+                ret = ret.Replace(
+                    Environment.NewLine + Environment.NewLine, 
+                    Environment.NewLine);
+            
             return ret;
+        }
+
+        /// <summary>
+        /// Extract text from document, delivered as a dictionary where the key is the slide number.
+        /// </summary>
+        /// <returns>Enumerable of key-value pairs, where the key is the slide number, and the value is the text content.</returns>
+        public IEnumerable<KeyValuePair<int, string>> ExtractTextBySlide()
+        {
+            // see https://www.codeproject.com/Articles/20529/Using-DocxToText-to-Extract-Text-from-DOCX-Files
+
+            string root = TempDirectory + _SlidesSubdirectory;
+            StringBuilder sb = new StringBuilder();
+
+            FileInfo[] files = new DirectoryInfo(TempDirectory + _SlidesSubdirectory).GetFiles();
+            SortedDictionary<int, FileInfo> filesOrdered = new SortedDictionary<int, FileInfo>();
+
+            foreach (FileInfo fi in files)
+            {
+                if (fi.Name.StartsWith("slide") && fi.Name.EndsWith(".xml"))
+                {
+                    string temp = fi.Name.Replace("slide", "").Replace(".xml", "");
+                    int num = Convert.ToInt32(temp);
+                    filesOrdered.Add(num, fi);
+                }
+            }
+
+            foreach (KeyValuePair<int, FileInfo> kvp in filesOrdered)
+            {
+                FileInfo fi = kvp.Value;
+
+                if (fi.Name.StartsWith("slide") && fi.Name.EndsWith(".xml"))
+                {
+                    // Console.WriteLine("File " + fi.Name);
+
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.PreserveWhitespace = true;
+                    xmlDoc.Load(fi.FullName);
+
+                    XmlNamespaceManager nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+                    nsmgr.AddNamespace("w", _WXmlNamespace);
+                    nsmgr.AddNamespace("cp", _CpXmlNamespace);
+                    nsmgr.AddNamespace("dc", _DcXmlNamespace);
+                    nsmgr.AddNamespace("a", _AXmlNamespace);
+                    nsmgr.AddNamespace("r", _RXmlNamespace);
+                    nsmgr.AddNamespace("p", _PXmlNamespace);
+
+                    XmlNode node = xmlDoc.DocumentElement.SelectSingleNode(_DocumentBodyXPath, nsmgr);
+                    
+                    string content = ReadNode(node);
+                    
+                    while (content.Contains("  ")) content = content.Replace("  ", " ");
+                    while (content.Contains(Environment.NewLine + Environment.NewLine))
+                        content = content.Replace(
+                            Environment.NewLine + Environment.NewLine, 
+                            Environment.NewLine);
+
+                    yield return new KeyValuePair<int, string>(kvp.Key, content + Environment.NewLine);
+                }
+            }
         }
 
         #endregion
@@ -237,6 +233,7 @@ namespace DocumentParser
                 return string.Empty;
 
             StringBuilder sb = new StringBuilder();
+
             foreach (XmlNode child in node.ChildNodes)
             {
                 if (child.NodeType != XmlNodeType.Element) continue;
@@ -251,7 +248,6 @@ namespace DocumentParser
                     case "t":   // Text
                         sb.Append(child.InnerText + " ");
                         sb.Append(ReadNode(child));
-                        // sb.Append(Environment.NewLine);
                         break;
 
                     case "cr":                          // Carriage return
@@ -265,22 +261,8 @@ namespace DocumentParser
                 }
             }
 
+            // sb.Append(Environment.NewLine);
             return sb.ToString();
-        }
-
-        private void RecursiveDelete(DirectoryInfo baseDir, bool isRootDir)
-        {
-            if (!baseDir.Exists) return;
-            foreach (DirectoryInfo dir in baseDir.EnumerateDirectories()) RecursiveDelete(dir, false);
-            foreach (FileInfo file in baseDir.GetFiles())
-            {
-                file.IsReadOnly = false;
-                file.Delete();
-            }
-            if (!isRootDir)
-            {
-                baseDir.Delete();
-            }
         }
 
         #endregion

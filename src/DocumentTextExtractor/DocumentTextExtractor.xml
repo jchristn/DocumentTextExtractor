@@ -1,172 +1,149 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>DocumentParser</name>
+        <name>DocumentTextExtractor</name>
     </assembly>
     <members>
-        <member name="T:DocumentParser.DocxParser">
+        <member name="T:DocumentParser.DocxTextExtractor">
             <summary>
-            Docx parser.
+            Docx text extractor.
             </summary>
         </member>
-        <member name="P:DocumentParser.DocxParser.Serializer">
-            <summary>
-            Serialization helper.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.DocxParser.TempDirectory">
-            <summary>
-            Temporary directory.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.DocxParser.DirInfo">
-            <summary>
-            Directory info.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.DocxParser.Filename">
-            <summary>
-            Filename.
-            </summary>
-        </member>
-        <member name="M:DocumentParser.DocxParser.#ctor(System.String,System.String)">
+        <member name="M:DocumentParser.DocxTextExtractor.#ctor(System.String,System.String)">
             <summary>
             Instantiate.
             </summary>
             <param name="tempDirectory">Base temp directory.</param>
             <param name="filename">Filename.</param>
         </member>
-        <member name="M:DocumentParser.DocxParser.Dispose">
+        <member name="M:DocumentParser.DocxTextExtractor.Dispose">
             <summary>
             Dispose of resources.
             </summary>
         </member>
-        <member name="M:DocumentParser.DocxParser.ExtractMetadata">
+        <member name="M:DocumentParser.DocxTextExtractor.ExtractMetadata">
             <summary>
             Extract metadata from document.
             </summary>
             <returns>Dictionary containing metadata.</returns>
         </member>
-        <member name="M:DocumentParser.DocxParser.ExtractText">
+        <member name="M:DocumentParser.DocxTextExtractor.ExtractText">
             <summary>
             Extract text from document.
             </summary>
             <returns>Text contents.</returns>
         </member>
-        <member name="T:DocumentParser.IDocumentParser">
+        <member name="T:DocumentParser.IDocumentTextExtractor">
             <summary>
-            Document parser abstract class.
+            Document text extractor abstract class.
             </summary>
         </member>
-        <member name="M:DocumentParser.IDocumentParser.ExtractMetadata">
+        <member name="P:DocumentParser.IDocumentTextExtractor.Guid">
             <summary>
-            Extract metadata from document.
-            </summary>
-            <returns>Dictionary containing metadata.</returns>
-        </member>
-        <member name="M:DocumentParser.IDocumentParser.ExtractText">
-            <summary>
-            Extract text from document.
-            </summary>
-            <returns>Text contents.</returns>
-        </member>
-        <member name="T:DocumentParser.PdfParser">
-            <summary>
-            Pdf parser.
+            GUID.
             </summary>
         </member>
-        <member name="P:DocumentParser.PdfParser.Serializer">
+        <member name="P:DocumentParser.IDocumentTextExtractor.Serializer">
             <summary>
             Serialization helper.
             </summary>
         </member>
-        <member name="P:DocumentParser.PdfParser.TempDirectory">
+        <member name="P:DocumentParser.IDocumentTextExtractor.TempDirectory">
             <summary>
             Temporary directory.
             </summary>
         </member>
-        <member name="P:DocumentParser.PdfParser.DirInfo">
+        <member name="P:DocumentParser.IDocumentTextExtractor.DirInfo">
             <summary>
             Directory info.
             </summary>
         </member>
-        <member name="P:DocumentParser.PdfParser.Filename">
+        <member name="P:DocumentParser.IDocumentTextExtractor.Filename">
             <summary>
             Filename.
             </summary>
         </member>
-        <member name="M:DocumentParser.PdfParser.#ctor(System.String,System.String)">
+        <member name="M:DocumentParser.IDocumentTextExtractor.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.IDocumentTextExtractor.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
+        </member>
+        <member name="M:DocumentParser.IDocumentTextExtractor.RecursiveDelete(System.IO.DirectoryInfo,System.Boolean)">
+            <summary>
+            Recursively delete a directory.
+            </summary>
+            <param name="baseDir">Base directory.</param>
+            <param name="isRootDir">True to indicate the supplied directory is the root directory.</param>
+        </member>
+        <member name="T:DocumentParser.PdfTextExtractor">
+            <summary>
+            PDF text extractor.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.#ctor(System.String)">
+            <summary>
+            Instantiate.
+            </summary>
+            <param name="filename">Filename.</param>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.Dispose">
+            <summary>
+            Dispose of resources.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.ExtractMetadata">
+            <summary>
+            Extract metadata from document.
+            </summary>
+            <returns>Dictionary containing metadata.</returns>
+        </member>
+        <member name="M:DocumentParser.PdfTextExtractor.ExtractText">
+            <summary>
+            Extract text from document.
+            </summary>
+            <returns>Text contents.</returns>
+        </member>
+        <member name="T:DocumentParser.PptxTextExtractor">
+            <summary>
+            Pptx text extractor.
+            </summary>
+        </member>
+        <member name="M:DocumentParser.PptxTextExtractor.#ctor(System.String,System.String)">
             <summary>
             Instantiate.
             </summary>
             <param name="tempDirectory">Base temp directory.</param>
             <param name="filename">Filename.</param>
         </member>
-        <member name="M:DocumentParser.PdfParser.Dispose">
+        <member name="M:DocumentParser.PptxTextExtractor.Dispose">
             <summary>
             Dispose of resources.
             </summary>
         </member>
-        <member name="M:DocumentParser.PdfParser.ExtractMetadata">
+        <member name="M:DocumentParser.PptxTextExtractor.ExtractMetadata">
             <summary>
             Extract metadata from document.
             </summary>
             <returns>Dictionary containing metadata.</returns>
         </member>
-        <member name="M:DocumentParser.PdfParser.ExtractText">
+        <member name="M:DocumentParser.PptxTextExtractor.ExtractText">
             <summary>
             Extract text from document.
             </summary>
             <returns>Text contents.</returns>
         </member>
-        <member name="T:DocumentParser.PptxParser">
+        <member name="M:DocumentParser.PptxTextExtractor.ExtractTextBySlide">
             <summary>
-            Pptx parser.
+            Extract text from document, delivered as a dictionary where the key is the slide number.
             </summary>
-        </member>
-        <member name="P:DocumentParser.PptxParser.Serializer">
-            <summary>
-            Serialization helper.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.PptxParser.TempDirectory">
-            <summary>
-            Temporary directory.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.PptxParser.DirInfo">
-            <summary>
-            Directory info.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.PptxParser.Filename">
-            <summary>
-            Filename.
-            </summary>
-        </member>
-        <member name="M:DocumentParser.PptxParser.#ctor(System.String,System.String)">
-            <summary>
-            Instantiate.
-            </summary>
-            <param name="tempDirectory">Base temp directory.</param>
-            <param name="filename">Filename.</param>
-        </member>
-        <member name="M:DocumentParser.PptxParser.Dispose">
-            <summary>
-            Dispose of resources.
-            </summary>
-        </member>
-        <member name="M:DocumentParser.PptxParser.ExtractMetadata">
-            <summary>
-            Extract metadata from document.
-            </summary>
-            <returns>Dictionary containing metadata.</returns>
-        </member>
-        <member name="M:DocumentParser.PptxParser.ExtractText">
-            <summary>
-            Extract text from document.
-            </summary>
-            <returns>Text contents.</returns>
+            <returns>Enumerable of key-value pairs, where the key is the slide number, and the value is the text content.</returns>
         </member>
         <member name="T:DocumentParser.SerializationHelper">
             <summary>
@@ -223,54 +200,40 @@
             <param name="pretty">Pretty print.</param>
             <returns>XML string.</returns>
         </member>
-        <member name="T:DocumentParser.XlsxParser">
+        <member name="T:DocumentParser.XlsxTextExtractor">
             <summary>
-            Xlsx parser.
+            Xlsx text extractor.
             </summary>
         </member>
-        <member name="P:DocumentParser.XlsxParser.Serializer">
-            <summary>
-            Serialization helper.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.XlsxParser.TempDirectory">
-            <summary>
-            Temporary directory.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.XlsxParser.DirInfo">
-            <summary>
-            Directory info.
-            </summary>
-        </member>
-        <member name="P:DocumentParser.XlsxParser.Filename">
-            <summary>
-            Filename.
-            </summary>
-        </member>
-        <member name="M:DocumentParser.XlsxParser.#ctor(System.String,System.String)">
+        <member name="M:DocumentParser.XlsxTextExtractor.#ctor(System.String,System.String)">
             <summary>
             Instantiate.
             </summary>
             <param name="tempDirectory">Base temp directory.</param>
             <param name="filename">Filename.</param>
         </member>
-        <member name="M:DocumentParser.XlsxParser.Dispose">
+        <member name="M:DocumentParser.XlsxTextExtractor.Dispose">
             <summary>
             Dispose of resources.
             </summary>
         </member>
-        <member name="M:DocumentParser.XlsxParser.ExtractMetadata">
+        <member name="M:DocumentParser.XlsxTextExtractor.ExtractMetadata">
             <summary>
             Extract metadata from document.
             </summary>
             <returns>Dictionary containing metadata.</returns>
         </member>
-        <member name="M:DocumentParser.XlsxParser.ExtractText">
+        <member name="M:DocumentParser.XlsxTextExtractor.ExtractText">
             <summary>
             Extract text from document.
             </summary>
             <returns>Text contents.</returns>
+        </member>
+        <member name="M:DocumentParser.XlsxTextExtractor.ExtractTextBySheet">
+            <summary>
+            Extract text from document, delivered as a dictionary where the key is the sheet number.
+            </summary>
+            <returns>Enumerable of key-value pairs, where the key is the sheet number, and the value is the text content.</returns>
         </member>
     </members>
 </doc>
