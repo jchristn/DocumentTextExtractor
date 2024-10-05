@@ -17,7 +17,7 @@
         #endregion
 
         #region Private-Members
-
+            
         private const string _WXmlNamespace = @"http://schemas.openxmlformats.org/wordprocessingml/2006/main";
         private const string _CpXmlNamespace = @"http://schemas.openxmlformats.org/wordprocessingml/2006/main";
         private const string _DcXmlNamespace = @"http://purl.org/dc/elements/1.1/";
@@ -140,15 +140,12 @@
 
                 if (fi.Name.StartsWith("sheet") && fi.Name.EndsWith(".xml"))
                 {
-                    // Console.WriteLine("File " + fi.Name);
-
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.PreserveWhitespace = true;
                     xmlDoc.Load(fi.FullName);
 
                     foreach (XmlNode node in xmlDoc.ChildNodes)
                     {
-                        // Console.WriteLine(node.NodeType.ToString() + " " + node.Name + " " + node.LocalName + " " + node.InnerText);
                         sb.Append(ReadNode(node));
                         sb.Append(Environment.NewLine);
                     }
@@ -197,8 +194,6 @@
 
                 if (fi.Name.StartsWith("sheet") && fi.Name.EndsWith(".xml"))
                 {
-                    // Console.WriteLine("File " + fi.Name);
-
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.PreserveWhitespace = true;
                     xmlDoc.Load(fi.FullName);
@@ -207,7 +202,6 @@
 
                     foreach (XmlNode node in xmlDoc.ChildNodes)
                     {
-                        // Console.WriteLine(node.NodeType.ToString() + " " + node.Name + " " + node.LocalName + " " + node.InnerText);
                         sb.Append(ReadNode(node));
                         sb.Append(Environment.NewLine);
                     }
@@ -237,7 +231,6 @@
             StringBuilder sb = new StringBuilder();
             foreach (XmlNode child in node.ChildNodes)
             {
-                // Console.WriteLine("  " + child.NodeType.ToString() + " " + child.Name + " " + child.LocalName + " " + child.InnerXml);
                 if (child.NodeType != XmlNodeType.Element) continue;
                 if (String.IsNullOrEmpty(child.InnerText)) continue;
 
@@ -262,7 +255,7 @@
                             }
                             else
                             {
-                                if (_SharedStrings != null)
+                                if (_SharedStrings != null && _SharedStrings.Length > 0)
                                 {
                                     if (Int32.TryParse(content.InnerText, out int val))
                                     {
@@ -273,7 +266,15 @@
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    sb.Append(content.InnerText + " ");
+                                }
                             }
+                        }
+                        else
+                        {
+                            sb.Append(content.InnerText + " ");
                         }
                     }
                 }
@@ -311,7 +312,6 @@
             }
 
             string[] retArray = ret.ToArray();
-            // for (int i = 0; i < retArray.Length; i++) Console.WriteLine(i + ": " + retArray[i]);
 
             return retArray;
         }
